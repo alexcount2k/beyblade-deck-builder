@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyblade X - Genesis Deck Builder</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #ef4444;
+            --accent-hover: #dc2626;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --cx-color: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--accent);
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .budget-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .budget-info h2 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .budget-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .budget-value-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--accent);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .bey-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .bey-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .bey-title-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bey-title {
+            font-size: 1.1rem;
+            color: #38bdf8;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .cx-toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--cx-color);
+            background: #0369a120;
+            border: 1px solid #0284c740;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 600;
+        }
+
+        .cx-toggle-label input {
+            cursor: pointer;
+            accent-color: var(--cx-color);
+        }
+
+        .bey-points {
+            font-size: 0.9rem;
+            background: #0f172a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .select-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-group.cx-field label {
+            color: var(--cx-color);
+        }
+
+        select {
+            width: 100%;
+            padding: 9px 10px;
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        select option {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .stats-bar {
+            position: sticky;
+            bottom: 20px;
+            background: #1e293be6;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .stats-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stats-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background: #22c55e20;
+            color: #4ade80;
+            border: 1px solid #22c55e40;
+        }
+
+        .badge-warning {
+            background: #ef444420;
+            color: #f87171;
+            border: 1px solid #ef444440;
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-hover);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Beyblade X Deck Builder</h1>
+        <p>Formato Genesis / Limit Punti</p>
+    </header>
+
+    <div class="budget-card">
+        <div class="budget-info">
+            <h2>Soglia Punti Torneo</h2>
+            <p>Limite massimo consentito per la composizione del deck.</p>
+        </div>
+        <div class="budget-value-box">
+            <span id="sogliaDisplay">10</span> PT
+        </div>
+    </div>
+
+    <!-- BEYBLADE #1 -->
+    <div class="bey-card" id="card-bey1">
+        <div class="bey-header">
+            <div class="bey-title-group">
+                <span class="bey-title">Beyblade #1</span>
+                <label class="cx-toggle-label">
+                    <input type="checkbox" class="cx-checkbox" onchange="toggleCX(1)"> Attiva parti CX
+                </label>
+            </div>
+            <span class="bey-points">Punti: <strong id="pts-bey1">0</strong> pt</span>
+        </div>
+        <div class="select-grid">
+            <div class="field-group cx-field cx-group-1" style="display: none;">
+                <label>Lock Chip (CX)</label>
+                <select class="chip-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Main Blade</label>
+                <select class="blade-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group cx-field cx-group-1" style="display: none;">
+                <label>Assist Blade (CX)</label>
+                <select class="assist-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group cx-field cx-group-1" style="display: none;">
+                <label>Over Blade (CX Infinity)</label>
+                <select class="over-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Ratchet</label>
+                <select class="ratchet-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Bit (Punta)</label>
+                <select class="bit-select" onchange="calcolaTotale()"></select>
+            </div>
+        </div>
+    </div>
+
+    <!-- BEYBLADE #2 -->
+    <div class="bey-card" id="card-bey2">
+        <div class="bey-header">
+            <div class="bey-title-group">
+                <span class="bey-title">Beyblade #2</span>
+                <label class="cx-toggle-label">
+                    <input type="checkbox" class="cx-checkbox" onchange="toggleCX(2)"> Attiva parti CX
+                </label>
+            </div>
+            <span class="bey-points">Punti: <strong id="pts-bey2">0</strong> pt</span>
+        </div>
+        <div class="select-grid">
+            <div class="field-group cx-field cx-group-2" style="display: none;">
+                <label>Lock Chip (CX)</label>
+                <select class="chip-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Main Blade</label>
+                <select class="blade-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group cx-field cx-group-2" style="display: none;">
+                <label>Assist Blade (CX)</label>
+                <select class="assist-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group cx-field cx-group-2" style="display: none;">
+                <label>Over Blade (CX Infinity)</label>
+                <select class="over-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Ratchet</label>
+                <select class="ratchet-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Bit (Punta)</label>
+                <select class="bit-select" onchange="calcolaTotale()"></select>
+            </div>
+        </div>
+    </div>
+
+    <!-- BEYBLADE #3 -->
+    <div class="bey-card" id="card-bey3">
+        <div class="bey-header">
+            <div class="bey-title-group">
+                <span class="bey-title">Beyblade #3</span>
+                <label class="cx-toggle-label">
+                    <input type="checkbox" class="cx-checkbox" onchange="toggleCX(3)"> Attiva parti CX
+                </label>
+            </div>
+            <span class="bey-points">Punti: <strong id="pts-bey3">0</strong> pt</span>
+        </div>
+        <div class="select-grid">
+            <div class="field-group cx-field cx-group-3" style="display: none;">
+                <label>Lock Chip (CX)</label>
+                <select class="chip-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Main Blade</label>
+                <select class="blade-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group cx-field cx-group-3" style="display: none;">
+                <label>Assist Blade (CX)</label>
+                <select class="assist-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group cx-field cx-group-3" style="display: none;">
+                <label>Over Blade (CX Infinity)</label>
+                <select class="over-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Ratchet</label>
+                <select class="ratchet-select" onchange="calcolaTotale()"></select>
+            </div>
+            <div class="field-group">
+                <label>Bit (Punta)</label>
+                <select class="bit-select" onchange="calcolaTotale()"></select>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANNELLO FINALE -->
+    <div class="stats-bar">
+        <div class="stats-info">
+            <div class="stats-text">
+                Totale Punti: <span id="puntiTotali">0</span> / <span id="budgetDisplay">10</span>
+            </div>
+            <div id="statusBadge" class="status-badge badge-success">DECK VALIDO</div>
+        </div>
+        <button class="btn-copy" onclick="copiaDeck()">Copia Formazione per Chat</button>
+    </div>
+</div>
+
+<script>
+    // CONFIGURAZIONE SOGLIA PUNTI TORNEO
+    const SOGLIA_PUNTI_TORNEO = 10;
+
+    // DATASET INTEGRATI DAI FILE JSON CON I TUOI PUNTEGGI
+    const RAW_BITS = [
+      {"name": "Narrow", "combatType": "Defense", "punti": 1},
+      {"name": "Free Flat", "combatType": "Attack", "punti": 0},
+      {"name": "Gear Unite", "combatType": "Balance", "punti": 0},
+      {"name": "Yelding", "combatType": "Stamina", "punti": 0},
+      {"name": "Low Point", "combatType": "Balance", "punti": 0},
+      {"name": "Ignition", "combatType": "Attack", "punti": 0},
+      {"name": "Accel", "combatType": "Attack", "punti": 0},
+      {"name": "Ball", "combatType": "Stamina", "punti": 0},
+      {"name": "Bound Spike", "combatType": "Defense", "punti": 0},
+      {"name": "Cyclone", "combatType": "Attack", "punti": 0},
+      {"name": "Disk Ball", "combatType": "Stamina", "punti": 0},
+      {"name": "Dot", "combatType": "Defense", "punti": 0},
+      {"name": "Elevate", "combatType": "Defense", "punti": 1},
+      {"name": "Flat", "combatType": "Attack", "punti": 0},
+      {"name": "Free Ball", "combatType": "Stamina", "punti": 2},
+      {"name": "Gear Ball", "combatType": "Stamina", "punti": 0},
+      {"name": "Gear Flat", "combatType": "Attack", "punti": 0},
+      {"name": "Gear Needle", "combatType": "Defense", "punti": 0},
+      {"name": "Gear Point", "combatType": "Balance", "punti": 0},
+      {"name": "Gear Rush", "combatType": "Attack", "punti": 0},
+      {"name": "Glide", "combatType": "Stamina", "punti": 0},
+      {"name": "Hexa", "combatType": "Defense", "punti": 2},
+      {"name": "High Needle", "combatType": "Defense", "punti": 0},
+      {"name": "High Taper", "combatType": "Balance", "punti": 0},
+      {"name": "Jolt", "combatType": "Attack", "punti": 1},
+      {"name": "Kick", "combatType": "Defense", "punti": 1},
+      {"name": "Level", "combatType": "Balance", "punti": 1},
+      {"name": "Low Flat", "combatType": "Attack", "punti": 0},
+      {"name": "Low Orb", "combatType": "Stamina", "punti": 1},
+      {"name": "Low Rush", "combatType": "Attack", "punti": 2},
+      {"name": "Merge", "combatType": "Balance", "punti": 0},
+      {"name": "Metal Needle", "combatType": "Defense", "punti": 0},
+      {"name": "Needle", "combatType": "Defense", "punti": 0},
+      {"name": "Orb", "combatType": "Stamina", "punti": 0},
+      {"name": "Point", "combatType": "Balance", "punti": 0},
+      {"name": "Quake", "combatType": "Attack", "punti": 0},
+      {"name": "Rubber Accel", "combatType": "Attack", "punti": 0},
+      {"name": "Rush", "combatType": "Attack", "punti": 1},
+      {"name": "Spike", "combatType": "Defense", "punti": 0},
+      {"name": "Taper", "combatType": "Balance", "punti": 0},
+      {"name": "Trans Kick", "combatType": "Defense", "punti": 0},
+      {"name": "Trans Point", "combatType": "Balance", "punti": 0},
+      {"name": "Under Flat", "combatType": "Attack", "punti": 0},
+      {"name": "Under Needle", "combatType": "Defense", "punti": 0},
+      {"name": "Unite", "combatType": "Balance", "punti": 0},
+      {"name": "Vortex", "combatType": "Attack", "punti": 0},
+      {"name": "Wall Ball", "combatType": "Stamina", "punti": 0},
+      {"name": "Wall Wedge", "combatType": "Defense", "punti": 0},
+      {"name": "Wedge", "combatType": "Defense", "punti": 0},
+      {"name": "Zap", "combatType": "Attack", "punti": 0},
+      {"name": "Operate(Op)", "combatType": "Balance", "punti": 0},
+      {"name": "Turbo(Tr)", "combatType": "Attack", "punti": 0}
+    ];
+
+    const RAW_BLADES = [
+      {"name": "Viper Tail", "system": "BX", "type": null, "punti": 0},
+      {"name": "Hells Nether", "system": "UX", "type": null, "punti": 2},
+      {"name": "Yell Kong", "system": "BX", "type": null, "punti": 0},
+      {"name": "Shinobi Cutter", "system": "UX", "type": null, "punti": 0},
+      {"name": "Bat Gust", "system": "BX", "type": null, "punti": 0},
+      {"name": "Knuckle", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Fortress", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Rage", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Odd", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Tyranno Beat", "system": "BX", "type": null, "punti": 1},
+      {"name": "Tough", "system": "CX", "type": "Overblade", "punti": 0},
+      {"name": "Suppress Superion", "system": "UX", "type": "Mainblade", "punti": 2},
+      {"name": "Peak", "system": "CX", "type": "Overblade", "punti": 0},
+      {"name": "Samurai Steel", "system": "BX", "type": null, "punti": 0},
+      {"name": "Valor Bison", "system": "UX", "type": null, "punti": 0},
+      {"name": "Shark Edge", "system": "BX", "type": null, "punti": 0},
+      {"name": "Shelter Drake", "system": "BX", "type": null, "punti": 0},
+      {"name": "Gravity", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Tyranno Roar", "system": "BX", "type": null, "punti": 0},
+      {"name": "Rampart Aegis", "system": "UX", "type": null, "punti": 0},
+      {"name": "Quell", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Delta", "system": "CX", "type": "Mainblade", "punti": 1},
+      {"name": "Mammoth Tusk", "system": "BX", "type": null, "punti": 0},
+      {"name": "Whale Wave", "system": "BX", "type": null, "punti": 0},
+      {"name": "Blitz", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Leon Claw", "system": "BX", "type": null, "punti": 0},
+      {"name": "Knight Shield", "system": "BX", "type": null, "punti": 0},
+      {"name": "Outer", "system": "CX", "type": "Overblade", "punti": 0},
+      {"name": "Tricera Press", "system": "BX", "type": null, "punti": 0},
+      {"name": "Whip", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Rhino Horn", "system": "BX", "type": null, "punti": 0},
+      {"name": "Wizard Arrow", "system": "BX", "type": null, "punti": 0},
+      {"name": "Bullet Griffon", "system": "UX", "type": null, "punti": 4},
+      {"name": "Orochi Cluster", "system": "UX", "type": null, "punti": 1},
+      {"name": "Weiss Tiger", "system": "BX", "type": null, "punti": 0},
+      {"name": "Break", "system": "CX", "type": "Overblade", "punti": 0},
+      {"name": "Vertical", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "HaevensRing", "system": "BX", "type": null, "punti": 0},
+      {"name": "Shatter Horus", "system": "BX", "type": null, "punti": 0},
+      {"name": "Phoenix Wing", "system": "BX", "type": null, "punti": 3},
+      {"name": "Ptera Swing", "system": "BX", "type": null, "punti": 0},
+      {"name": "Sphinx Cowl", "system": "BX", "type": null, "punti": 0},
+      {"name": "Seize Jaguar", "system": "UX", "type": null, "punti": 0},
+      {"name": "Flow", "system": "CX", "type": "Overblade", "punti": 0},
+      {"name": "Dran Strike", "system": "BX", "type": null, "punti": 1},
+      {"name": "Unicorn Sting", "system": "BX", "type": null, "punti": 0},
+      {"name": "Eclipse Blue", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Shark Gill", "system": "BX", "type": null, "punti": 0},
+      {"name": "Erase", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Shinobi Knife", "system": "BX", "type": null, "punti": 0},
+      {"name": "Wyvern Gale", "system": "BX", "type": null, "punti": 0},
+      {"name": "Glory Valkyrie", "system": "UX", "type": null, "punti": 5},
+      {"name": "Dran Sword V2", "system": "BX", "type": null, "punti": 0},
+      {"name": "Guard", "system": "CX", "type": "Overblade", "punti": 0},
+      {"name": "Samurai Calibur", "system": "BX", "type": null, "punti": 0},
+      {"name": "Tread", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Phoenix Feather", "system": "BX", "type": null, "punti": 0},
+      {"name": "Aero Pegasus", "system": "UX", "type": "Blade", "punti": 6},
+      {"name": "Dran Buster", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Clock Mirage", "system": "UX", "type": "Blade", "punti": 2},
+      {"name": "Ghost Circle", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Golem Rock", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Hack Vicking", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Hells Hammer", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Impact Drake", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Knight Mail", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Leon Crest", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Meteor Dragoon", "system": "UX", "type": "Blade", "punti": 4},
+      {"name": "Mummy Curse", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Phoenix Rudder", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Samurai Saber", "system": "UX", "type": "Blade", "punti": 1},
+      {"name": "Scorpio Spear", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Shark Scale", "system": "UX", "type": "Blade", "punti": 7},
+      {"name": "Shinobi Shadow", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Silver Wolf", "system": "UX", "type": "Blade", "punti": 5},
+      {"name": "Stun Medusa", "system": "UX", "type": "Blade", "punti": 0},
+      {"name": "Wizard Rod", "system": "UX", "type": "Blade", "punti": 7},
+      {"name": "Wyvern Hover", "system": "UX", "type": "Blade", "punti": 6},
+      {"name": "Bear Scratch", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Black Shell", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Cobalt Dragoon", "system": "BX", "type": "Blade", "punti": 7},
+      {"name": "Cobalt Drake", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Crimson Garuda", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Croc Crunch", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Dran Dagger", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Dran Sword", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Goat Tackle", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Hell Sycthe", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Hells Chain", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Knight Lance", "system": "BX", "type": "Blade", "punti": 0},
+      {"name": "Draciel S", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Dragoon S", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Dranzer S", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Driger S", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "L-Drago (Barrage Type)", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "L-Drago (Upper Type)", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Rock Leone", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Storm Pegasus", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Victory Valkyrie", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Xeno Xcalibur", "system": "XO", "type": "Blade", "punti": 0},
+      {"name": "Arc", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Blast", "system": "CX", "type": "Mainblade", "punti": 1},
+      {"name": "Brave", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Brush", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Dark", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Eclipse Red", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Flame", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Flare", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Hunt", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Might", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Reaper", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Volt", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Fort", "system": "CX", "type": "Main Blade", "punti": 0},
+      {"name": "Wriggle", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Antler", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Assault", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Bumper", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Charge", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Dual", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Free", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Heavy", "system": "CX", "type": "Assistblade", "punti": 1},
+      {"name": "Jaggy", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Massive", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Round", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Slash", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Turn", "system": "CX", "type": "Assistblade", "punti": 0},
+      {"name": "Wheel", "system": "CX", "type": "Assistblade", "punti": 1},
+      {"name": "Zillion", "system": "CX", "type": "Assistblade", "punti": 0}
+    ];
+
+    const RAW_RATCHETS = [
+      {"name": "0-60", "punti": 0}, {"name": "0-70", "punti": 0}, {"name": "0-80", "punti": 0},
+      {"name": "1-50", "punti": 1}, {"name": "1-60", "punti": 2}, {"name": "1-70", "punti": 1},
+      {"name": "1-80", "punti": 1}, {"name": "2-60", "punti": 0}, {"name": "2-70", "punti": 0},
+      {"name": "2-80", "punti": 0}, {"name": "3-60", "punti": 1}, {"name": "3-70", "punti": 0},
+      {"name": "3-80", "punti": 0}, {"name": "3-85", "punti": 0}, {"name": "4-50", "punti": 0},
+      {"name": "4-55", "punti": 0}, {"name": "4-60", "punti": 0}, {"name": "4-70", "punti": 0},
+      {"name": "4-80", "punti": 0}, {"name": "5-50", "punti": 0}, {"name": "5-60", "punti": 1},
+      {"name": "5-70", "punti": 0}, {"name": "5-80", "punti": 0}, {"name": "6-60", "punti": 0},
+      {"name": "6-70", "punti": 0}, {"name": "6-80", "punti": 0}, {"name": "7-55", "punti": 0},
+      {"name": "7-60", "punti": 1}, {"name": "7-70", "punti": 1}, {"name": "7-80", "punti": 0},
+      {"name": "8-70", "punti": 0}, {"name": "8-80", "punti": 0}, {"name": "9-60", "punti": 2},
+      {"name": "9-65", "punti": 0}, {"name": "9-70", "punti": 1}, {"name": "9-80", "punti": 0},
+      {"name": "M-85", "punti": 0}
+    ];
+
+    function sortByName(array) {
+        return array.sort((a, b) => a.nome.localeCompare(b.nome));
+    }
+
+    function elaboraPezzi() {
+        let mainStandardMap = {};
+        let mainCXMap = {};
+        let assistList = [];
+        let overList = [];
+
+        RAW_BLADES.forEach(b => {
+            let pts = (b.punti !== undefined) ? b.punti : 0;
+            let item = { nome: b.name, punti: pts };
+            if (b.type === "Assistblade") {
+                assistList.push(item);
+            } else if (b.type === "Overblade") {
+                overList.push(item);
+            } else {
+                let sys = b.system || "Altri";
+                if (sys === "CX") {
+                    if (!mainCXMap[sys]) mainCXMap[sys] = [];
+                    mainCXMap[sys].push(item);
+                } else {
+                    if (!mainStandardMap[sys]) mainStandardMap[sys] = [];
+                    mainStandardMap[sys].push(item);
+                }
+            }
+        });
+
+        Object.keys(mainStandardMap).forEach(sys => sortByName(mainStandardMap[sys]));
+        Object.keys(mainCXMap).forEach(sys => sortByName(mainCXMap[sys]));
+
+        let assistsSorted = sortByName(assistList);
+        assistsSorted.unshift({ nome: "", etichetta: "Nessuno", punti: 0 });
+
+        let oversSorted = sortByName(overList);
+        oversSorted.unshift({ nome: "", etichetta: "Nessuno", punti: 0 });
+
+        let ratchetList = RAW_RATCHETS.map(r => ({ nome: r.name, punti: (r.punti !== undefined) ? r.punti : 0 }));
+        sortByName(ratchetList);
+        ratchetList.unshift({ nome: "Nessuno (Integrato)", etichetta: "Nessuno / Integrato", punti: 0 });
+
+        let bitMap = {};
+        RAW_BITS.forEach(bt => {
+            let type = bt.combatType ? (bt.combatType.charAt(0).toUpperCase() + bt.combatType.slice(1).toLowerCase()) : "Altri";
+            let pts = (bt.punti !== undefined) ? bt.punti : 0;
+            if (!bitMap[type]) bitMap[type] = [];
+            bitMap[type].push({ nome: bt.name, punti: pts });
+        });
+
+        Object.keys(bitMap).forEach(type => sortByName(bitMap[type]));
+
+        return {
+            chips: [
+                { nome: "", etichetta: "Nessuno", punti: 0 },
+                { nome: "Plastic Chip", punti: 0 },
+                { nome: "Metal Chip", punti: 1 }
+            ],
+            mainStandardGrouped: mainStandardMap,
+            mainCXGrouped: mainCXMap,
+            assists: assistsSorted,
+            overs: oversSorted,
+            ratchets: ratchetList,
+            bitGrouped: bitMap
+        };
+    }
+
+    const DATABASE_PEZZI = elaboraPezzi();
+
+    function popoloSelectFlat(selectElement, items) {
+        selectElement.innerHTML = "";
+        items.forEach(item => {
+            let opt = document.createElement("option");
+            opt.value = item.nome;
+            let displayNome = item.etichetta || item.nome;
+            opt.textContent = `${displayNome} (${item.punti} pt)`;
+            opt.setAttribute("data-punti", item.punti);
+            selectElement.appendChild(opt);
+        });
+    }
+
+    function popoloSelectGrouped(selectElement, groupedData, orderKeys = null) {
+        selectElement.innerHTML = "";
+        let keys = orderKeys || Object.keys(groupedData).sort();
+        
+        keys.forEach(key => {
+            if (groupedData[key] && groupedData[key].length > 0) {
+                let groupEl = document.createElement("optgroup");
+                groupEl.label = `--- ${key} ---`;
+                
+                groupedData[key].forEach(item => {
+                    let opt = document.createElement("option");
+                    opt.value = item.nome;
+                    let displayNome = item.etichetta || item.nome;
+                    opt.textContent = `${displayNome} (${item.punti} pt)`;
+                    opt.setAttribute("data-punti", item.punti);
+                    groupEl.appendChild(opt);
+                });
+                
+                selectElement.appendChild(groupEl);
+            }
+        });
+    }
+
+    function aggiornaBladeSelect(index) {
+        let card = document.getElementById('card-bey' + index);
+        let isCXActive = card.querySelector('.cx-checkbox').checked;
+        let bladeSelect = card.querySelector('.blade-select');
+
+        if (isCXActive) {
+            popoloSelectGrouped(bladeSelect, DATABASE_PEZZI.mainCXGrouped, ["CX"]);
+        } else {
+            popoloSelectGrouped(bladeSelect, DATABASE_PEZZI.mainStandardGrouped, ["BX", "UX", "XO"]);
+        }
+    }
+
+    function inizializzaApp() {
+        document.getElementById('sogliaDisplay').innerText = SOGLIA_PUNTI_TORNEO;
+        document.getElementById('budgetDisplay').innerText = SOGLIA_PUNTI_TORNEO;
+
+        for (let i = 1; i <= 3; i++) {
+            let card = document.getElementById(`card-bey${i}`);
+            
+            popoloSelectFlat(card.querySelector('.chip-select'), DATABASE_PEZZI.chips);
+            aggiornaBladeSelect(i);
+            popoloSelectFlat(card.querySelector('.assist-select'), DATABASE_PEZZI.assists);
+            popoloSelectFlat(card.querySelector('.over-select'), DATABASE_PEZZI.overs);
+            popoloSelectFlat(card.querySelector('.ratchet-select'), DATABASE_PEZZI.ratchets);
+            popoloSelectGrouped(card.querySelector('.bit-select'), DATABASE_PEZZI.bitGrouped, ["Attack", "Defense", "Stamina", "Balance"]);
+            
+            if (i === 2 && card.querySelector('.blade-select').options.length > 1) {
+                card.querySelector('.blade-select').selectedIndex = 1;
+                card.querySelector('.ratchet-select').selectedIndex = 1;
+                card.querySelector('.bit-select').selectedIndex = 1;
+            } else if (i === 3 && card.querySelector('.blade-select').options.length > 2) {
+                card.querySelector('.blade-select').selectedIndex = 2;
+                card.querySelector('.ratchet-select').selectedIndex = 2;
+                card.querySelector('.bit-select').selectedIndex = 2;
+            }
+        }
+        calcolaTotale();
+    }
+
+    function toggleCX(index) {
+        let card = document.getElementById('card-bey' + index);
+        let checkbox = card.querySelector('.cx-checkbox');
+        let cxFields = card.querySelectorAll('.cx-group-' + index);
+
+        cxFields.forEach(field => {
+            if (checkbox.checked) {
+                field.style.display = 'block';
+            } else {
+                field.style.display = 'none';
+                let select = field.querySelector('select');
+                if (select) select.selectedIndex = 0;
+            }
+        });
+
+        // Aggiorna dinamicamente la lista delle Main Blade
+        aggiornaBladeSelect(index);
+
+        calcolaTotale();
+    }
+
+    function calcolaTotale() {
+        let budget = SOGLIA_PUNTI_TORNEO;
+        let cards = document.querySelectorAll('.bey-card');
+        let totalePuntiDeck = 0;
+
+        cards.forEach((card, index) => {
+            let isCXActive = card.querySelector('.cx-checkbox').checked;
+
+            let chip = card.querySelector('.chip-select');
+            let blade = card.querySelector('.blade-select');
+            let assist = card.querySelector('.assist-select');
+            let over = card.querySelector('.over-select');
+            let ratchet = card.querySelector('.ratchet-select');
+            let bit = card.querySelector('.bit-select');
+
+            let pChip = (isCXActive && chip && chip.selectedIndex >= 0) ? (parseInt(chip.options[chip.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+            let pBlade = (blade && blade.selectedIndex >= 0) ? (parseInt(blade.options[blade.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+            let pAssist = (isCXActive && assist && assist.selectedIndex >= 0) ? (parseInt(assist.options[assist.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+            let pOver = (isCXActive && over && over.selectedIndex >= 0) ? (parseInt(over.options[over.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+            let pRatchet = (ratchet && ratchet.selectedIndex >= 0) ? (parseInt(ratchet.options[ratchet.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+            let pBit = (bit && bit.selectedIndex >= 0) ? (parseInt(bit.options[bit.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+
+            let totaleBey = pChip + pBlade + pAssist + pOver + pRatchet + pBit;
+            document.getElementById('pts-bey' + (index + 1)).innerText = totaleBey;
+
+            totalePuntiDeck += totaleBey;
+        });
+
+        document.getElementById('puntiTotali').innerText = totalePuntiDeck;
+
+        let badge = document.getElementById('statusBadge');
+        if (totalePuntiDeck > budget) {
+            badge.innerText = "SOGLIA SUPERATA";
+            badge.className = "status-badge badge-warning";
+        } else {
+            badge.innerText = "DECK VALIDO";
+            badge.className = "status-badge badge-success";
+        }
+    }
+
+    function copiaDeck() {
+        let budget = SOGLIA_PUNTI_TORNEO;
+        let totale = document.getElementById('puntiTotali').innerText;
+        let cards = document.querySelectorAll('.bey-card');
+
+        let testo = `🌀 *MY BEYBLADE X DECK* 🌀\n`;
+        testo += `📊 Punti: ${totale}/${budget}\n\n`;
+
+        cards.forEach((card, i) => {
+            let isCXActive = card.querySelector('.cx-checkbox').checked;
+
+            let chip = card.querySelector('.chip-select').value;
+            let blade = card.querySelector('.blade-select').value;
+            let assist = card.querySelector('.assist-select').value;
+            let over = card.querySelector('.over-select').value;
+            let ratchet = card.querySelector('.ratchet-select').value;
+            let bit = card.querySelector('.bit-select').value;
+
+            let parti = [];
+            if (isCXActive && chip) parti.push(`[${chip}]`);
+            parti.push(blade);
+            if (isCXActive && assist) parti.push(`+ ${assist}`);
+            if (isCXActive && over) parti.push(`+ ${over}`);
+            if (ratchet !== "Nessuno (Integrato)") parti.push(ratchet);
+            parti.push(bit);
+
+            testo += `${i+1}️⃣ ${parti.join(' ')}\n`;
+        });
+
+        navigator.clipboard.writeText(testo).then(() => {
+            alert("Deck copiato negli appunti!");
+        }).catch(() => {
+            alert("Errore durante la copia negli appunti.");
+        });
+    }
+
+    // Avvio iniziale dell'applicazione
+    inizializzaApp();
+</script>
+
+</body>
+</html>
