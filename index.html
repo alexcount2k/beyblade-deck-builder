@@ -6,15 +6,15 @@
     <title>Beyblade X - Genesis Deck Builder</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #ef4444;
-            --accent-hover: #dc2626;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
+            --bg-color: #0b0f0d;
+            --card-bg: #141c17;
+            --accent: #a3e635; /* Verde lime brillante ispirato al logo */
+            --accent-hover: #84cc16;
+            --text-color: #f0fdf4;
+            --text-muted: #86efac90;
+            --border-color: #223028;
             --success: #22c55e;
-            --warning: #f59e0b;
+            --warning: #ef4444;
             --cx-color: #38bdf8;
         }
 
@@ -28,7 +28,7 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding: 20px 10px;
+            padding: 25px 10px;
             display: flex;
             justify-content: center;
         }
@@ -40,19 +40,20 @@
 
         header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         header h1 {
             color: var(--accent);
-            font-size: 2rem;
+            font-size: 2.2rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+            text-shadow: 0 0 20px rgba(163, 230, 53, 0.2);
         }
 
         header p {
-            color: var(--text-muted);
+            color: #94a3b8;
             font-size: 0.95rem;
         }
 
@@ -68,41 +69,43 @@
         .budget-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px 20px;
+            border-radius: 14px;
+            padding: 16px 20px;
             flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
 
         .budget-info h2 {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             margin-bottom: 2px;
+            color: #f8fafc;
         }
 
         .budget-info p {
             font-size: 0.82rem;
-            color: var(--text-muted);
+            color: #94a3b8;
         }
 
         .budget-value-box {
-            background: #0f172a;
+            background: #0b0f0d;
             border: 1px solid var(--border-color);
             color: var(--accent);
-            padding: 6px 15px;
-            border-radius: 8px;
-            font-size: 1.2rem;
+            padding: 6px 16px;
+            border-radius: 10px;
+            font-size: 1.25rem;
             font-weight: bold;
             text-align: center;
         }
 
         .btn-reset {
             background: transparent;
-            color: var(--text-muted);
+            color: #94a3b8;
             border: 1px solid var(--border-color);
-            padding: 12px 18px;
-            border-radius: 12px;
+            padding: 14px 20px;
+            border-radius: 14px;
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
@@ -112,37 +115,43 @@
 
         .btn-reset:hover {
             background: #ef444415;
-            color: var(--accent);
-            border-color: var(--accent);
+            color: #f87171;
+            border-color: #ef444440;
         }
 
         .warning-banner {
-            background: #f59e0b20;
-            border: 1px solid #f59e0b50;
+            background: #f59e0b15;
+            border: 1px solid #f59e0b40;
             color: #fcd34d;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.88rem;
             margin-bottom: 20px;
             display: none;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .bey-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent);
-            border-radius: 12px;
-            padding: 20px;
+            border-left: 5px solid var(--accent);
+            border-radius: 14px;
+            padding: 22px;
             margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .bey-card:hover {
+            border-color: #2d4234;
         }
 
         .bey-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -154,10 +163,11 @@
         }
 
         .bey-title {
-            font-size: 1.1rem;
-            color: #38bdf8;
+            font-size: 1.15rem;
+            color: var(--accent);
             font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .cx-toggle-label {
@@ -168,7 +178,7 @@
             color: var(--cx-color);
             background: #0369a120;
             border: 1px solid #0284c740;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
             cursor: pointer;
             user-select: none;
@@ -182,25 +192,27 @@
 
         .bey-points {
             font-size: 0.9rem;
-            background: #0f172a;
-            padding: 4px 10px;
+            background: #0b0f0d;
+            padding: 6px 14px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
+            color: #cbd5e1;
         }
 
         .select-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
+            gap: 14px;
         }
 
         .field-group label {
             display: block;
             font-size: 0.78rem;
-            color: var(--text-muted);
+            color: #94a3b8;
             margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .field-group.cx-field label {
@@ -209,50 +221,63 @@
 
         select {
             width: 100%;
-            padding: 9px 10px;
-            background-color: #ffffff;
-            color: #000000;
+            padding: 10px 12px;
+            background-color: #0b0f0d;
+            color: #f8fafc;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        select:hover {
+            border-color: var(--accent);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(163, 230, 53, 0.2);
         }
 
         select option {
-            background-color: #ffffff;
-            color: #000000;
+            background-color: #141c17;
+            color: #f8fafc;
         }
 
         .stats-bar {
             position: sticky;
             bottom: 20px;
-            background: #1e293be6;
-            backdrop-filter: blur(10px);
+            background: #141c17f0;
+            backdrop-filter: blur(12px);
             border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 22px;
             margin-top: 30px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
         .stats-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .stats-text {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: bold;
+            color: #f8fafc;
         }
 
         .status-badge {
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: bold;
+            letter-spacing: 0.5px;
         }
 
         .badge-success {
@@ -269,23 +294,32 @@
 
         .btn-copy {
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             background: var(--accent);
-            color: white;
+            color: #0b0f0d;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-copy:hover {
             background: var(--accent-hover);
+            box-shadow: 0 0 20px rgba(163, 230, 53, 0.4);
         }
 
         .btn-copy.copied {
             background: var(--success);
+            color: white;
+        }
+
+        .btn-copy.error {
+            background: var(--warning);
+            color: white;
         }
     </style>
 </head>
@@ -706,7 +740,6 @@
 
         return {
             chips: [
-                { nome: "", etichetta: "Nessuno", punti: 0 },
                 { nome: "Plastic Chip", punti: 0 },
                 { nome: "Metal Chip", punti: 1 }
             ],
@@ -721,9 +754,18 @@
 
     const DATABASE_PEZZI = elaboraPezzi();
 
-    function popoloSelectFlat(selectElement, items) {
+    function popoloSelectFlat(selectElement, items, placeholder = "Seleziona...") {
         selectElement.innerHTML = "";
+        
+        let defaultOpt = document.createElement("option");
+        defaultOpt.value = "";
+        defaultOpt.textContent = placeholder;
+        defaultOpt.setAttribute("data-punti", "0");
+        selectElement.appendChild(defaultOpt);
+
         items.forEach(item => {
+            if (item.nome === "") return;
+
             let opt = document.createElement("option");
             opt.value = item.nome;
             let displayNome = item.etichetta || item.nome;
@@ -734,8 +776,15 @@
         });
     }
 
-    function popoloSelectGrouped(selectElement, groupedData, orderKeys = null) {
+    function popoloSelectGrouped(selectElement, groupedData, orderKeys = null, placeholder = "Seleziona Main Blade...") {
         selectElement.innerHTML = "";
+        
+        let defaultOpt = document.createElement("option");
+        defaultOpt.value = "";
+        defaultOpt.textContent = placeholder;
+        defaultOpt.setAttribute("data-punti", "0");
+        selectElement.appendChild(defaultOpt);
+
         let keys = orderKeys || Object.keys(groupedData).sort();
         
         keys.forEach(key => {
@@ -764,9 +813,9 @@
         let bladeSelect = card.querySelector('.blade-select');
 
         if (isCXActive) {
-            popoloSelectGrouped(bladeSelect, DATABASE_PEZZI.mainCXGrouped, ["CX"]);
+            popoloSelectGrouped(bladeSelect, DATABASE_PEZZI.mainCXGrouped, ["CX"], "Seleziona Main Blade (CX)...");
         } else {
-            popoloSelectGrouped(bladeSelect, DATABASE_PEZZI.mainStandardGrouped, ["BX", "UX", "XO"]);
+            popoloSelectGrouped(bladeSelect, DATABASE_PEZZI.mainStandardGrouped, ["BX", "UX", "XO"], "Seleziona Main Blade...");
         }
     }
 
@@ -777,12 +826,36 @@
         for (let i = 1; i <= 3; i++) {
             let card = document.getElementById(`card-bey${i}`);
             
-            popoloSelectFlat(card.querySelector('.chip-select'), DATABASE_PEZZI.chips);
+            popoloSelectFlat(card.querySelector('.chip-select'), DATABASE_PEZZI.chips, "Seleziona Chip...");
             aggiornaBladeSelect(i);
-            popoloSelectFlat(card.querySelector('.assist-select'), DATABASE_PEZZI.assists);
-            popoloSelectFlat(card.querySelector('.over-select'), DATABASE_PEZZI.overs);
-            popoloSelectFlat(card.querySelector('.ratchet-select'), DATABASE_PEZZI.ratchets);
-            popoloSelectGrouped(card.querySelector('.bit-select'), DATABASE_PEZZI.bitGrouped, ["Attack", "Defense", "Stamina", "Balance"]);
+            popoloSelectFlat(card.querySelector('.assist-select'), DATABASE_PEZZI.assists, "Seleziona Assist...");
+            popoloSelectFlat(card.querySelector('.over-select'), DATABASE_PEZZI.overs, "Seleziona Over...");
+            popoloSelectFlat(card.querySelector('.ratchet-select'), DATABASE_PEZZI.ratchets, "Seleziona Ratchet...");
+            
+            let bitSelect = card.querySelector('.bit-select');
+            bitSelect.innerHTML = "";
+            let defaultOpt = document.createElement("option");
+            defaultOpt.value = "";
+            defaultOpt.textContent = "Seleziona Bit...";
+            defaultOpt.setAttribute("data-punti", "0");
+            bitSelect.appendChild(defaultOpt);
+
+            ["Attack", "Defense", "Stamina", "Balance"].forEach(key => {
+                let items = DATABASE_PEZZI.bitGrouped[key];
+                if (items && items.length > 0) {
+                    let groupEl = document.createElement("optgroup");
+                    groupEl.label = `--- ${key} ---`;
+                    items.forEach(item => {
+                        let opt = document.createElement("option");
+                        opt.value = item.nome;
+                        opt.textContent = `${item.nome} (${item.punti} pt)`;
+                        opt.setAttribute("data-punti", item.punti);
+                        if (item.punti > 0) opt.style.fontWeight = "bold";
+                        groupEl.appendChild(opt);
+                    });
+                    bitSelect.appendChild(groupEl);
+                }
+            });
         }
 
         caricaDaMemoria();
@@ -799,7 +872,7 @@
 
         cxFields.forEach(field => {
             if (field.classList.contains('over-field-' + index)) {
-                return; // L'over field viene gestito separatamente dalla lama scelta
+                return;
             }
             if (checkbox.checked) {
                 field.style.display = 'block';
@@ -976,9 +1049,50 @@
     }
 
     function copiaDeck() {
+        let cards = document.querySelectorAll('.bey-card');
+        let campiVuotiTrovati = false;
+
+        // Validazione rigorosa: controlla campi standard e CX (se attivi)
+        cards.forEach((card) => {
+            let isCXActive = card.querySelector('.cx-checkbox').checked;
+            let chip = card.querySelector('.chip-select').value;
+            let blade = card.querySelector('.blade-select').value;
+            let assist = card.querySelector('.assist-select').value;
+            
+            let overField = card.querySelector('.over-field-' + card.id.replace('card-bey', ''));
+            let isOverVisible = overField && overField.style.display !== 'none';
+            let over = isOverVisible ? card.querySelector('.over-select').value : "";
+
+            let ratchet = card.querySelector('.ratchet-select').value;
+            let bit = card.querySelector('.bit-select').value;
+
+            // Se manca la lama, il ratchet o il bit -> errore
+            if (!blade || !ratchet || !bit) {
+                campiVuotiTrovati = true;
+            }
+
+            // Se CX è attivo, servono obbligatoriamente anche Chip e Assist Blade (e Over Blade se visibile)
+            if (isCXActive) {
+                if (!chip || !assist || (isOverVisible && !over)) {
+                    campiVuotiTrovati = true;
+                }
+            }
+        });
+
+        if (campiVuotiTrovati) {
+            let btn = document.getElementById('copyBtn');
+            let testoOriginale = btn.innerText;
+            btn.innerText = "⚠️ Compila tutti i campi obbligatori/CX!";
+            btn.classList.add('error');
+            setTimeout(() => {
+                btn.innerText = testoOriginale;
+                btn.classList.remove('error');
+            }, 2500);
+            return;
+        }
+
         let budget = SOGLIA_PUNTI_TORNEO;
         let totale = document.getElementById('puntiTotali').innerText;
-        let cards = document.querySelectorAll('.bey-card');
 
         let testo = `🌀 *MY BEYBLADE X DECK* 🌀\n`;
         testo += `📊 Punti Totali: ${totale}/${budget}\n\n`;
