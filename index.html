@@ -100,6 +100,28 @@
             text-align: center;
         }
 
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-surprise {
+            background: #38bdf820;
+            color: var(--cx-color);
+            border: 1px solid #0284c750;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-surprise:hover {
+            background: #38bdf835;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
         .btn-reset {
             background: transparent;
             color: #94a3b8;
@@ -341,7 +363,10 @@
                 <span id="sogliaDisplay">10</span> PT
             </div>
         </div>
-        <button class="btn-reset" onclick="azzeraDeck()">Azzera Deck</button>
+        <div class="action-buttons">
+            <button class="btn-surprise" onclick="riempiCasualeMirato()">🎲 Sorprendimi!</button>
+            <button class="btn-reset" onclick="azzeraDeck()">Azzera Deck</button>
+        </div>
     </div>
 
     <div id="duplicateWarning" class="warning-banner">
@@ -1048,11 +1073,126 @@
         }
     }
 
+    function calcolaPuntiAttualiDeck() {
+        let totale = 0;
+        document.querySelectorAll('.bey-card').forEach((card) => {
+            card.querySelectorAll('select').forEach(sel => {
+                if (sel.value && sel.offsetParent !== null) {
+                    let opt = sel.options[sel.selectedIndex];
+                    totale += parseInt(opt.getAttribute('data-punti')) || 0;
+                }
+            });
+        });
+        return totale;
+    }
+
+    function scegliOpzioneValida(selectElement, maxPunti, elementiEsclusi) {
+        let options = Array.from(selectElement.querySelectorAll('option')).filter(opt => {
+            if (opt.value === "") return false;
+            // Esclude qualsiasi voce "Nessuno" o "Integrato" dal random
+            if (opt.value.includes("Nessuno") || opt.value.includes("Integrato")) return false;
+            // Esclude i pezzi già usati altrove nel deck
+            if (elementiEsclusi.includes(opt.value)) return false;
+            let pts = parseInt(opt.getAttribute('data-punti')) || 0;
+            return pts <= maxPunti;
+        });
+
+        if (options.length === 0) {
+            // Fallback se i vincoli sono troppo stretti
+            options = Array.from(selectElement.querySelectorAll('option')).filter(opt => {
+                if (opt.value === "") return false;
+                if (opt.value.includes("Nessuno") || opt.value.includes("Integrato")) return false;
+                return !elementiEsclusi.includes(opt.value);
+            });
+        }
+
+        if (options.length === 0) return null;
+        let scelta = options[Math.floor(Math.random() * options.length)];
+        return scelta.value;
+    }
+
+    function riempiCasualeMirato() {
+        let bladesUsate = [];
+        let ratchetsUsate = [];
+        let bitsUsate = [];
+
+        // Raccoglie i pezzi già fissati dall'utente
+        document.querySelectorAll('.bey-card').forEach((card) => {
+            let b = card.querySelector('.blade-select').value;
+            let r = card.querySelector('.ratchet-select').value;
+            let bt = card.querySelector('.bit-select').value;
+            if (b) bladesUsate.push(b);
+            if (r && !r.includes("Nessuno")) ratchetsUsate.push(r);
+            if (bt) bitsUsate.push(bt);
+        });
+
+        for (let tentativi = 0; tentativi < 10; tentativi++) {
+            document.querySelectorAll('.bey-card').forEach((card, index) => {
+                let isCXActive = card.querySelector('.cx-checkbox').checked;
+
+                let blade = card.querySelector('.blade-select');
+                let ratchet = card.querySelector('.ratchet-select');
+                let bit = card.querySelector('.bit-select');
+                let chip = card.querySelector('.chip-select');
+                let assist = card.querySelector('.assist-select');
+                let overField = card.querySelector('.over-field-' + (index + 1));
+                let over = card.querySelector('.over-select');
+
+                if (!blade.value) {
+                    let puntiMancanti = SOGLIA_PUNTI_TORNEO - calcolaPuntiAttualiDeck();
+                    let scelta = scegliOpzioneValida(blade, puntiMancanti, bladesUsate);
+                    if (scelta) {
+                        blade.value = scelta;
+                        bladesUsate.push(scelta);
+                        aggiornaVisibilitaOverBlade(index + 1);
+                    }
+                }
+
+                if (isCXActive) {
+                    if (!chip.value) {
+                        let puntiMancanti = SOGLIA_PUNTI_TORNEO - calcolaPuntiAttualiDeck();
+                        let scelta = scegliOpzioneValida(chip, puntiMancanti, []);
+                        if (scelta) chip.value = scelta;
+                    }
+                    if (!assist.value) {
+                        let puntiMancanti = SOGLIA_PUNTI_TORNEO - calcolaPuntiAttualiDeck();
+                        let scelta = scegliOpzioneValida(assist, puntiMancanti, []);
+                        if (scelta) assist.value = scelta;
+                    }
+                    if (overField && overField.style.display !== 'none' && !over.value) {
+                        let puntiMancanti = SOGLIA_PUNTI_TORNEO - calcolaPuntiAttualiDeck();
+                        let scelta = scegliOpzioneValida(over, puntiMancanti, []);
+                        if (scelta) over.value = scelta;
+                    }
+                }
+
+                if (!ratchet.value) {
+                    let puntiMancanti = SOGLIA_PUNTI_TORNEO - calcolaPuntiAttualiDeck();
+                    let scelta = scegliOpzioneValida(ratchet, puntiMancanti, ratchetsUsate);
+                    if (scelta) {
+                        ratchet.value = scelta;
+                        ratchetsUsate.push(scelta);
+                    }
+                }
+
+                if (!bit.value) {
+                    let puntiMancanti = SOGLIA_PUNTI_TORNEO - calcolaPuntiAttualiDeck();
+                    let scelta = scegliOpzioneValida(bit, puntiMancanti, bitsUsate);
+                    if (scelta) {
+                        bit.value = scelta;
+                        bitsUsate.push(scelta);
+                    }
+                }
+            });
+        }
+
+        gestisciModifica();
+    }
+
     function copiaDeck() {
         let cards = document.querySelectorAll('.bey-card');
         let campiVuotiTrovati = false;
 
-        // Validazione rigorosa: controlla campi standard e CX (se attivi)
         cards.forEach((card) => {
             let isCXActive = card.querySelector('.cx-checkbox').checked;
             let chip = card.querySelector('.chip-select').value;
@@ -1066,12 +1206,10 @@
             let ratchet = card.querySelector('.ratchet-select').value;
             let bit = card.querySelector('.bit-select').value;
 
-            // Se manca la lama, il ratchet o il bit -> errore
             if (!blade || !ratchet || !bit) {
                 campiVuotiTrovati = true;
             }
 
-            // Se CX è attivo, servono obbligatoriamente anche Chip e Assist Blade (e Over Blade se visibile)
             if (isCXActive) {
                 if (!chip || !assist || (isOverVisible && !over)) {
                     campiVuotiTrovati = true;
