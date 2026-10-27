@@ -296,7 +296,7 @@
                 <select class="ratchet-select" onchange="calcolaTotale()"></select>
             </div>
             <div class="field-group">
-                <label>Bit (Punta)</label>
+                <label>Bit</label>
                 <select class="bit-select" onchange="calcolaTotale()"></select>
             </div>
         </div>
@@ -335,7 +335,7 @@
                 <select class="ratchet-select" onchange="calcolaTotale()"></select>
             </div>
             <div class="field-group">
-                <label>Bit (Punta)</label>
+                <label>Bit</label>
                 <select class="bit-select" onchange="calcolaTotale()"></select>
             </div>
         </div>
@@ -374,7 +374,7 @@
                 <select class="ratchet-select" onchange="calcolaTotale()"></select>
             </div>
             <div class="field-group">
-                <label>Bit (Punta)</label>
+                <label>Bit</label>
                 <select class="bit-select" onchange="calcolaTotale()"></select>
             </div>
         </div>
@@ -400,6 +400,7 @@
     const RAW_BITS = [
       {"name": "Narrow", "combatType": "Defense", "punti": 1},
       {"name": "Free Flat", "combatType": "Attack", "punti": 0},
+      {"name": "Low Cyclone", "combatType": "Attack", "punti": 0},
       {"name": "Gear Unite", "combatType": "Balance", "punti": 0},
       {"name": "Yelding", "combatType": "Stamina", "punti": 0},
       {"name": "Low Point", "combatType": "Balance", "punti": 0},
@@ -419,11 +420,11 @@
       {"name": "Gear Point", "combatType": "Balance", "punti": 0},
       {"name": "Gear Rush", "combatType": "Attack", "punti": 0},
       {"name": "Glide", "combatType": "Stamina", "punti": 0},
-      {"name": "Hexa", "combatType": "Defense", "punti": 2},
+      {"name": "Hexa", "combatType": "Balance", "punti": 2},
       {"name": "High Needle", "combatType": "Defense", "punti": 0},
       {"name": "High Taper", "combatType": "Balance", "punti": 0},
       {"name": "Jolt", "combatType": "Attack", "punti": 1},
-      {"name": "Kick", "combatType": "Defense", "punti": 1},
+      {"name": "Kick", "combatType": "Balance", "punti": 1},
       {"name": "Level", "combatType": "Balance", "punti": 1},
       {"name": "Low Flat", "combatType": "Attack", "punti": 0},
       {"name": "Low Orb", "combatType": "Stamina", "punti": 1},
@@ -438,7 +439,7 @@
       {"name": "Rush", "combatType": "Attack", "punti": 1},
       {"name": "Spike", "combatType": "Defense", "punti": 0},
       {"name": "Taper", "combatType": "Balance", "punti": 0},
-      {"name": "Trans Kick", "combatType": "Defense", "punti": 0},
+      {"name": "Trans Kick", "combatType": "Balance", "punti": 0},
       {"name": "Trans Point", "combatType": "Balance", "punti": 0},
       {"name": "Under Flat", "combatType": "Attack", "punti": 0},
       {"name": "Under Needle", "combatType": "Defense", "punti": 0},
@@ -501,6 +502,7 @@
       {"name": "Unicorn Sting", "system": "BX", "type": null, "punti": 0},
       {"name": "Eclipse Blue", "system": "CX", "type": "Mainblade", "punti": 0},
       {"name": "Shark Gill", "system": "BX", "type": null, "punti": 0},
+      {"name": "Luster Dragoon", "system": "BX", "type": null, "punti": 0},
       {"name": "Erase", "system": "CX", "type": "Assistblade", "punti": 0},
       {"name": "Shinobi Knife", "system": "BX", "type": null, "punti": 0},
       {"name": "Wyvern Gale", "system": "BX", "type": null, "punti": 0},
