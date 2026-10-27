@@ -56,12 +56,21 @@
             font-size: 0.95rem;
         }
 
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         .budget-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            padding: 15px 20px;
+            flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -69,11 +78,11 @@
 
         .budget-info h2 {
             font-size: 1.1rem;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .budget-info p {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
         }
 
@@ -81,12 +90,43 @@
             background: #0f172a;
             border: 1px solid var(--border-color);
             color: var(--accent);
-            padding: 8px 18px;
+            padding: 6px 15px;
             border-radius: 8px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
-            letter-spacing: 0.5px;
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: auto;
+        }
+
+        .btn-reset:hover {
+            background: #ef444415;
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .warning-banner {
+            background: #f59e0b20;
+            border: 1px solid #f59e0b50;
+            color: #fcd34d;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 8px;
         }
 
         .bey-card {
@@ -237,11 +277,15 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .btn-copy:hover {
             background: var(--accent-hover);
+        }
+
+        .btn-copy.copied {
+            background: var(--success);
         }
     </style>
 </head>
@@ -253,14 +297,21 @@
         <p>Formato Genesis / Limit Punti</p>
     </header>
 
-    <div class="budget-card">
-        <div class="budget-info">
-            <h2>Soglia Punti Torneo</h2>
-            <p>Limite massimo consentito per la composizione del deck.</p>
+    <div class="top-actions">
+        <div class="budget-card">
+            <div class="budget-info">
+                <h2>Soglia Punti Torneo</h2>
+                <p>Limite massimo consentito per il deck.</p>
+            </div>
+            <div class="budget-value-box">
+                <span id="sogliaDisplay">10</span> PT
+            </div>
         </div>
-        <div class="budget-value-box">
-            <span id="sogliaDisplay">10</span> PT
-        </div>
+        <button class="btn-reset" onclick="azzeraDeck()">Azzera Deck</button>
+    </div>
+
+    <div id="duplicateWarning" class="warning-banner">
+        ⚠️ <strong>Attenzione:</strong> Hai inserito lo stesso pezzo (Main Blade, Ratchet o Bit) in più di un Beyblade! Controlla le regole del torneo sui doppioni.
     </div>
 
     <!-- BEYBLADE #1 -->
@@ -277,27 +328,27 @@
         <div class="select-grid">
             <div class="field-group cx-field cx-group-1" style="display: none;">
                 <label>Lock Chip (CX)</label>
-                <select class="chip-select" onchange="calcolaTotale()"></select>
+                <select class="chip-select" onchange="gestisciModifica(1)"></select>
             </div>
             <div class="field-group">
                 <label>Main Blade</label>
-                <select class="blade-select" onchange="calcolaTotale()"></select>
+                <select class="blade-select" onchange="gestisciModifica(1)"></select>
             </div>
             <div class="field-group cx-field cx-group-1" style="display: none;">
                 <label>Assist Blade (CX)</label>
-                <select class="assist-select" onchange="calcolaTotale()"></select>
+                <select class="assist-select" onchange="gestisciModifica(1)"></select>
             </div>
-            <div class="field-group cx-field cx-group-1" style="display: none;">
+            <div class="field-group cx-field cx-group-1 over-field-1" style="display: none;">
                 <label>Over Blade (CX Infinity)</label>
-                <select class="over-select" onchange="calcolaTotale()"></select>
+                <select class="over-select" onchange="gestisciModifica(1)"></select>
             </div>
             <div class="field-group">
                 <label>Ratchet</label>
-                <select class="ratchet-select" onchange="calcolaTotale()"></select>
+                <select class="ratchet-select" onchange="gestisciModifica(1)"></select>
             </div>
             <div class="field-group">
                 <label>Bit</label>
-                <select class="bit-select" onchange="calcolaTotale()"></select>
+                <select class="bit-select" onchange="gestisciModifica(1)"></select>
             </div>
         </div>
     </div>
@@ -316,27 +367,27 @@
         <div class="select-grid">
             <div class="field-group cx-field cx-group-2" style="display: none;">
                 <label>Lock Chip (CX)</label>
-                <select class="chip-select" onchange="calcolaTotale()"></select>
+                <select class="chip-select" onchange="gestisciModifica(2)"></select>
             </div>
             <div class="field-group">
                 <label>Main Blade</label>
-                <select class="blade-select" onchange="calcolaTotale()"></select>
+                <select class="blade-select" onchange="gestisciModifica(2)"></select>
             </div>
             <div class="field-group cx-field cx-group-2" style="display: none;">
                 <label>Assist Blade (CX)</label>
-                <select class="assist-select" onchange="calcolaTotale()"></select>
+                <select class="assist-select" onchange="gestisciModifica(2)"></select>
             </div>
-            <div class="field-group cx-field cx-group-2" style="display: none;">
+            <div class="field-group cx-field cx-group-2 over-field-2" style="display: none;">
                 <label>Over Blade (CX Infinity)</label>
-                <select class="over-select" onchange="calcolaTotale()"></select>
+                <select class="over-select" onchange="gestisciModifica(2)"></select>
             </div>
             <div class="field-group">
                 <label>Ratchet</label>
-                <select class="ratchet-select" onchange="calcolaTotale()"></select>
+                <select class="ratchet-select" onchange="gestisciModifica(2)"></select>
             </div>
             <div class="field-group">
                 <label>Bit</label>
-                <select class="bit-select" onchange="calcolaTotale()"></select>
+                <select class="bit-select" onchange="gestisciModifica(2)"></select>
             </div>
         </div>
     </div>
@@ -355,27 +406,27 @@
         <div class="select-grid">
             <div class="field-group cx-field cx-group-3" style="display: none;">
                 <label>Lock Chip (CX)</label>
-                <select class="chip-select" onchange="calcolaTotale()"></select>
+                <select class="chip-select" onchange="gestisciModifica(3)"></select>
             </div>
             <div class="field-group">
                 <label>Main Blade</label>
-                <select class="blade-select" onchange="calcolaTotale()"></select>
+                <select class="blade-select" onchange="gestisciModifica(3)"></select>
             </div>
             <div class="field-group cx-field cx-group-3" style="display: none;">
                 <label>Assist Blade (CX)</label>
-                <select class="assist-select" onchange="calcolaTotale()"></select>
+                <select class="assist-select" onchange="gestisciModifica(3)"></select>
             </div>
-            <div class="field-group cx-field cx-group-3" style="display: none;">
+            <div class="field-group cx-field cx-group-3 over-field-3" style="display: none;">
                 <label>Over Blade (CX Infinity)</label>
-                <select class="over-select" onchange="calcolaTotale()"></select>
+                <select class="over-select" onchange="gestisciModifica(3)"></select>
             </div>
             <div class="field-group">
                 <label>Ratchet</label>
-                <select class="ratchet-select" onchange="calcolaTotale()"></select>
+                <select class="ratchet-select" onchange="gestisciModifica(3)"></select>
             </div>
             <div class="field-group">
                 <label>Bit</label>
-                <select class="bit-select" onchange="calcolaTotale()"></select>
+                <select class="bit-select" onchange="gestisciModifica(3)"></select>
             </div>
         </div>
     </div>
@@ -388,15 +439,14 @@
             </div>
             <div id="statusBadge" class="status-badge badge-success">DECK VALIDO</div>
         </div>
-        <button class="btn-copy" onclick="copiaDeck()">Copia Formazione per Chat</button>
+        <button id="copyBtn" class="btn-copy" onclick="copiaDeck()">Copia Formazione per Chat</button>
     </div>
 </div>
 
 <script>
-    // CONFIGURAZIONE SOGLIA PUNTI TORNEO
     const SOGLIA_PUNTI_TORNEO = 10;
+    const LAME_CON_OVER = ["Blitz", "Delta", "Force", "Fortress", "Hurricane", "Rage", "Tread", "Whip"];
 
-    // DATASET INTEGRATI DAI FILE JSON CON I TUOI PUNTEGGI
     const RAW_BITS = [
       {"name": "Narrow", "combatType": "Defense", "punti": 1},
       {"name": "Free Flat", "combatType": "Attack", "punti": 0},
@@ -462,6 +512,8 @@
       {"name": "Knuckle", "system": "CX", "type": "Assistblade", "punti": 0},
       {"name": "Fortress", "system": "CX", "type": "Mainblade", "punti": 0},
       {"name": "Rage", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Force", "system": "CX", "type": "Mainblade", "punti": 0},
+      {"name": "Hurricane", "system": "CX", "type": "Mainblade", "punti": 0},
       {"name": "Odd", "system": "CX", "type": "Assistblade", "punti": 0},
       {"name": "Tyranno Beat", "system": "BX", "type": null, "punti": 1},
       {"name": "Tough", "system": "CX", "type": "Overblade", "punti": 0},
@@ -567,7 +619,6 @@
       {"name": "Might", "system": "CX", "type": "Mainblade", "punti": 0},
       {"name": "Reaper", "system": "CX", "type": "Mainblade", "punti": 0},
       {"name": "Volt", "system": "CX", "type": "Mainblade", "punti": 0},
-      {"name": "Fort", "system": "CX", "type": "Main Blade", "punti": 0},
       {"name": "Wriggle", "system": "CX", "type": "Mainblade", "punti": 0},
       {"name": "Antler", "system": "CX", "type": "Mainblade", "punti": 0},
       {"name": "Assault", "system": "CX", "type": "Assistblade", "punti": 0},
@@ -678,6 +729,7 @@
             let displayNome = item.etichetta || item.nome;
             opt.textContent = `${displayNome} (${item.punti} pt)`;
             opt.setAttribute("data-punti", item.punti);
+            if (item.punti > 0) opt.style.fontWeight = "bold";
             selectElement.appendChild(opt);
         });
     }
@@ -697,6 +749,7 @@
                     let displayNome = item.etichetta || item.nome;
                     opt.textContent = `${displayNome} (${item.punti} pt)`;
                     opt.setAttribute("data-punti", item.punti);
+                    if (item.punti > 0) opt.style.fontWeight = "bold";
                     groupEl.appendChild(opt);
                 });
                 
@@ -730,16 +783,11 @@
             popoloSelectFlat(card.querySelector('.over-select'), DATABASE_PEZZI.overs);
             popoloSelectFlat(card.querySelector('.ratchet-select'), DATABASE_PEZZI.ratchets);
             popoloSelectGrouped(card.querySelector('.bit-select'), DATABASE_PEZZI.bitGrouped, ["Attack", "Defense", "Stamina", "Balance"]);
-            
-            if (i === 2 && card.querySelector('.blade-select').options.length > 1) {
-                card.querySelector('.blade-select').selectedIndex = 1;
-                card.querySelector('.ratchet-select').selectedIndex = 1;
-                card.querySelector('.bit-select').selectedIndex = 1;
-            } else if (i === 3 && card.querySelector('.blade-select').options.length > 2) {
-                card.querySelector('.blade-select').selectedIndex = 2;
-                card.querySelector('.ratchet-select').selectedIndex = 2;
-                card.querySelector('.bit-select').selectedIndex = 2;
-            }
+        }
+
+        caricaDaMemoria();
+        for (let i = 1; i <= 3; i++) {
+            aggiornaVisibilitaOverBlade(i);
         }
         calcolaTotale();
     }
@@ -750,6 +798,9 @@
         let cxFields = card.querySelectorAll('.cx-group-' + index);
 
         cxFields.forEach(field => {
+            if (field.classList.contains('over-field-' + index)) {
+                return; // L'over field viene gestito separatamente dalla lama scelta
+            }
             if (checkbox.checked) {
                 field.style.display = 'block';
             } else {
@@ -759,10 +810,36 @@
             }
         });
 
-        // Aggiorna dinamicamente la lista delle Main Blade
         aggiornaBladeSelect(index);
+        gestisciModifica(index);
+    }
 
+    function aggiornaVisibilitaOverBlade(index) {
+        let card = document.getElementById('card-bey' + index);
+        let isCXActive = card.querySelector('.cx-checkbox').checked;
+        let bladeSelect = card.querySelector('.blade-select');
+        let overField = card.querySelector('.over-field-' + index);
+
+        if (!overField) return;
+
+        let selectedBlade = bladeSelect ? bladeSelect.value : "";
+
+        if (isCXActive && LAME_CON_OVER.includes(selectedBlade)) {
+            overField.style.display = 'block';
+        } else {
+            overField.style.display = 'none';
+            let overSelect = overField.querySelector('.over-select');
+            if (overSelect) overSelect.selectedIndex = 0;
+        }
+    }
+
+    function gestisciModifica(index) {
+        if (index) {
+            aggiornaVisibilitaOverBlade(index);
+        }
         calcolaTotale();
+        salvaInMemoria();
+        controllaDuplicati();
     }
 
     function calcolaTotale() {
@@ -783,7 +860,11 @@
             let pChip = (isCXActive && chip && chip.selectedIndex >= 0) ? (parseInt(chip.options[chip.selectedIndex].getAttribute('data-punti')) || 0) : 0;
             let pBlade = (blade && blade.selectedIndex >= 0) ? (parseInt(blade.options[blade.selectedIndex].getAttribute('data-punti')) || 0) : 0;
             let pAssist = (isCXActive && assist && assist.selectedIndex >= 0) ? (parseInt(assist.options[assist.selectedIndex].getAttribute('data-punti')) || 0) : 0;
-            let pOver = (isCXActive && over && over.selectedIndex >= 0) ? (parseInt(over.options[over.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+            
+            let overField = card.querySelector('.over-field-' + (index + 1));
+            let isOverVisible = overField && overField.style.display !== 'none';
+            let pOver = (isCXActive && isOverVisible && over && over.selectedIndex >= 0) ? (parseInt(over.options[over.selectedIndex].getAttribute('data-punti')) || 0) : 0;
+            
             let pRatchet = (ratchet && ratchet.selectedIndex >= 0) ? (parseInt(ratchet.options[ratchet.selectedIndex].getAttribute('data-punti')) || 0) : 0;
             let pBit = (bit && bit.selectedIndex >= 0) ? (parseInt(bit.options[bit.selectedIndex].getAttribute('data-punti')) || 0) : 0;
 
@@ -805,21 +886,115 @@
         }
     }
 
+    function controllaDuplicati() {
+        let blades = [];
+        let ratchets = [];
+        let bits = [];
+        let haDuplicati = false;
+
+        document.querySelectorAll('.bey-card').forEach(card => {
+            let b = card.querySelector('.blade-select').value;
+            let r = card.querySelector('.ratchet-select').value;
+            let bt = card.querySelector('.bit-select').value;
+
+            if (b) {
+                if (blades.includes(b)) haDuplicati = true;
+                blades.push(b);
+            }
+            if (r && r !== "Nessuno (Integrato)") {
+                if (ratchets.includes(r)) haDuplicati = true;
+                ratchets.push(r);
+            }
+            if (bt) {
+                if (bits.includes(bt)) haDuplicati = true;
+                bits.push(bt);
+            }
+        });
+
+        let warningBanner = document.getElementById('duplicateWarning');
+        if (haDuplicati) {
+            warningBanner.style.display = 'flex';
+        } else {
+            warningBanner.style.display = 'none';
+        }
+    }
+
+    function salvaInMemoria() {
+        let state = [];
+        document.querySelectorAll('.bey-card').forEach(card => {
+            state.push({
+                cx: card.querySelector('.cx-checkbox').checked,
+                chip: card.querySelector('.chip-select').value,
+                blade: card.querySelector('.blade-select').value,
+                assist: card.querySelector('.assist-select').value,
+                over: card.querySelector('.over-select').value,
+                ratchet: card.querySelector('.ratchet-select').value,
+                bit: card.querySelector('.bit-select').value
+            });
+        });
+        localStorage.setItem('beyblade_deck_state', JSON.stringify(state));
+    }
+
+    function caricaDaMemoria() {
+        let saved = localStorage.getItem('beyblade_deck_state');
+        if (!saved) return;
+        try {
+            let state = JSON.parse(saved);
+            let cards = document.querySelectorAll('.bey-card');
+            state.forEach((data, index) => {
+                if (cards[index]) {
+                    let card = cards[index];
+                    let checkbox = card.querySelector('.cx-checkbox');
+                    checkbox.checked = data.cx;
+                    toggleCX(index + 1);
+
+                    if (data.chip) card.querySelector('.chip-select').value = data.chip;
+                    if (data.blade) card.querySelector('.blade-select').value = data.blade;
+                    if (data.assist) card.querySelector('.assist-select').value = data.assist;
+                    if (data.over) card.querySelector('.over-select').value = data.over;
+                    if (data.ratchet) card.querySelector('.ratchet-select').value = data.ratchet;
+                    if (data.bit) card.querySelector('.bit-select').value = data.bit;
+                }
+            });
+        } catch (e) {
+            console.error("Errore nel caricamento della memoria locale", e);
+        }
+    }
+
+    function azzeraDeck() {
+        if (confirm("Vuoi davvero azzerare tutto il deck?")) {
+            localStorage.removeItem('beyblade_deck_state');
+            document.querySelectorAll('.bey-card').forEach((card, index) => {
+                card.querySelector('.cx-checkbox').checked = false;
+                toggleCX(index + 1);
+                card.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
+                aggiornaVisibilitaOverBlade(index + 1);
+            });
+            calcolaTotale();
+            controllaDuplicati();
+        }
+    }
+
     function copiaDeck() {
         let budget = SOGLIA_PUNTI_TORNEO;
         let totale = document.getElementById('puntiTotali').innerText;
         let cards = document.querySelectorAll('.bey-card');
 
         let testo = `🌀 *MY BEYBLADE X DECK* 🌀\n`;
-        testo += `📊 Punti: ${totale}/${budget}\n\n`;
+        testo += `📊 Punti Totali: ${totale}/${budget}\n\n`;
 
         cards.forEach((card, i) => {
             let isCXActive = card.querySelector('.cx-checkbox').checked;
+            let puntiBey = card.querySelector('#pts-bey' + (i + 1)).innerText;
 
             let chip = card.querySelector('.chip-select').value;
             let blade = card.querySelector('.blade-select').value;
             let assist = card.querySelector('.assist-select').value;
-            let over = card.querySelector('.over-select').value;
+            
+            let overField = card.querySelector('.over-field-' + (i + 1));
+            let isOverVisible = overField && overField.style.display !== 'none';
+            let over = isOverVisible ? card.querySelector('.over-select').value : "";
+            
             let ratchet = card.querySelector('.ratchet-select').value;
             let bit = card.querySelector('.bit-select').value;
 
@@ -827,21 +1002,27 @@
             if (isCXActive && chip) parti.push(`[${chip}]`);
             parti.push(blade);
             if (isCXActive && assist) parti.push(`+ ${assist}`);
-            if (isCXActive && over) parti.push(`+ ${over}`);
+            if (isCXActive && isOverVisible && over) parti.push(`+ ${over}`);
             if (ratchet !== "Nessuno (Integrato)") parti.push(ratchet);
             parti.push(bit);
 
-            testo += `${i+1}️⃣ ${parti.join(' ')}\n`;
+            testo += `${i+1}️⃣ ${parti.join(' ')} (*${puntiBey} pt*)\n`;
         });
 
         navigator.clipboard.writeText(testo).then(() => {
-            alert("Deck copiato negli appunti!");
+            let btn = document.getElementById('copyBtn');
+            let testoOriginale = btn.innerText;
+            btn.innerText = "Copiato negli appunti! ✓";
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerText = testoOriginale;
+                btn.classList.remove('copied');
+            }, 2000);
         }).catch(() => {
             alert("Errore durante la copia negli appunti.");
         });
     }
 
-    // Avvio iniziale dell'applicazione
     inizializzaApp();
 </script>
 
